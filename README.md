@@ -1,6 +1,6 @@
 # Task Management API
 
-A task management API with modern authentication, role-based access control.
+A minimalistic task management API with modern authentication, role-based access control.
 
 ## 🚀 Quick Overview
 
