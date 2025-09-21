@@ -1,6 +1,6 @@
-# Taskify Frontend
+# Frontend
 
-A modern React-based task management application with a clean, intuitive user interface.
+A minimalistic React-based task management user interface.
 
 ## 🚀 Quick Overview
 
