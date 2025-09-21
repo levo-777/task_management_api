@@ -308,40 +308,6 @@ curl -X POST http://localhost:8080/api/v1/auth/login \
 curl http://localhost:8080/health
 ```
 
-## 🔧 Advanced Features
-
-### Pagination
-- **Page-based pagination** for efficient large dataset handling
-- Use `page` parameter to control page number
-- Use `page_size` parameter to control page size
-
-### Filtering
-- **By status**: `?status=pending|in_progress|completed`
-- **By priority**: `?priority=low|medium|high`
-- **By search**: `?search=keyword`
-
-### Sorting
-- **Sort by**: `title`, `status`, `priority`, `created_at`, `updated_at`
-- **Order**: `asc` or `desc`
-- Example: `?sort_by=created_at&sort_order=desc`
-
-### Rate Limiting
-- **10 requests per minute** for general endpoints
-- **3 requests per minute** for authentication endpoints
-- Applied to all API endpoints except health and documentation
-
-### Caching
-- **High-performance Ristretto cache** for frequently accessed tasks
-- Automatic cache invalidation on updates
-- 5-minute TTL for cached tasks
-
-## Authentication
-
-All protected endpoints require a Bearer token in the Authorization header:
-
-```
-Authorization: Bearer <access_token>
-```
 
 ## Default Admin User
 
@@ -393,12 +359,6 @@ curl http://localhost:8080/health
 ### API Documentation
 Visit `http://localhost:8080/swagger/index.html` for interactive API documentation.
 
-### Performance Monitoring
-The application includes built-in performance monitoring:
-- Request/response logging
-- Error tracking
-- Rate limiting metrics
-- Cache hit/miss statistics
 
 ## 🚀 Production Deployment
 
@@ -429,71 +389,8 @@ DB_NAME=taskmanager
 SERVER_PORT=8080
 ```
 
-## 🔒 Security Features
-
-- **Password Hashing**: bcrypt with salt rounds
-- **JWT Authentication**: Access tokens with 1-hour expiry
-- **Refresh Tokens**: Secure token renewal mechanism
-- **Role-Based Access Control**: User and Admin roles with granular permissions
-- **Rate Limiting**: Protection against brute force attacks
-- **SQL Injection Protection**: Parameterized queries
-- **CORS Configuration**: Secure cross-origin requests
-- **Input Validation**: Request validation and sanitization
-
-## 🏗️ Project Structure
-
-```
-backend/
-├── docs/                    # Swagger documentation
-├── internal/
-│   ├── handlers/           # HTTP request handlers
-│   ├── middleware/         # Custom middleware (auth, rate limiting, logging)
-│   ├── models/            # Data models
-│   ├── repositories/      # Database connection and config
-│   ├── services/          # Business logic layer
-│   └── utils/             # Utility functions (pagination, etc.)
-├── migrations/            # Database migrations
-├── test/                  # Test files
-│   └── integrations/      # Integration tests
-├── Dockerfile            # Docker configuration
-├── go.mod               # Go module dependencies
-├── main.go              # Application entry point
-└── README.md            # This file
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Troubleshooting
-
-### Common Issues
-
-**Database Connection Failed**
-- Check if PostgreSQL is running
-- Verify database credentials in environment variables
-- Ensure database exists
-
-**Rate Limit Exceeded**
-- Wait 1 minute between requests
-- Check rate limit headers in response
-- Use authentication for higher limits
-
-**JWT Token Expired**
-- Use the refresh token endpoint to get a new access token
-- Check token expiry time in JWT payload
-
 ### Getting Help
 
 - Check the [API Documentation](http://localhost:8080/swagger/index.html)
 - Review the health check endpoint: `GET /health`
-- Check application logs for detailed error messages
-- Create an issue in the repository for bugs or feature requests
+
