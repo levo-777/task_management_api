@@ -1,6 +1,6 @@
-# Taskify Backend API
+# Task Management API 
 
-A comprehensive task management system API with CRUD operations, pagination, filtering, sorting, rate limiting, and caching.
+A minimalistic task management API with CRUD operations.
 
 ## 🚀 Quick Overview
 
