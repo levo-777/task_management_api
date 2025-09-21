@@ -13,25 +13,27 @@ Taskify is a complete task management solution that provides:
 - **Production Ready**: Docker containerization and comprehensive documentation
 - **High Performance**: Optimized database queries with caching and indexing
 
-## 🛠 Tech Stack
+## 🛠 Tech Stack & Versions
 
 ### Backend
-- **Language**: Go 1.23
-- **Framework**: Gin
-- **Database**: PostgreSQL 15
-- **ORM**: GORM
-- **Cache**: Ristretto
+- **Language**: Go 1.21+
+- **Framework**: Gin v1.9.1
+- **Database**: PostgreSQL 15.4
+- **ORM**: GORM v1.25.5
 - **Authentication**: JWT with refresh tokens
-- **Documentation**: Swagger/OpenAPI
-- **Testing**: Go testing framework
+- **UUID**: github.com/gofrs/uuid v4.4.0
+- **Password Hashing**: golang.org/x/crypto/bcrypt
 
 ### Frontend
-- **Framework**: React 18
-- **Build Tool**: Create React App
-- **Styling**: CSS3
-- **HTTP Client**: Axios
-- **State Management**: React Hooks
-- **Web Server**: Nginx
+- **Framework**: React 18.2.0
+- **Build Tool**: Create React App 5.0.1
+- **HTTP Client**: Axios 1.6.0
+- **Routing**: React Router DOM 6.20.1
+- **Form Handling**: React Hook Form 7.47.0
+- **UI Components**: Material-UI (MUI) 5.14.18
+- **JWT Decoding**: jwt-decode 4.0.0
+- **Date Handling**: Day.js 1.11.10
+- **Web Server**: Nginx 1.25.3 (Alpine)
 
 ### Infrastructure
 - **Containerization**: Docker & Docker Compose
@@ -43,8 +45,8 @@ Taskify is a complete task management solution that provides:
 ## 📋 Prerequisites
 
 ### For Local Development
-- **Go** 1.23 or higher
-- **Node.js** 16.0 or higher
+- **Go** 1.21 or higher
+- **Node.js** 18.0 or higher
 - **PostgreSQL** 15 or higher
 - **Git**
 
@@ -56,6 +58,7 @@ Taskify is a complete task management solution that provides:
 
 ### Option 1: Docker Compose (Recommended)
 
+#### Quick Start
 ```bash
 # Clone the repository
 git clone https://github.com/your-username/task_management_api.git
@@ -71,37 +74,112 @@ docker-compose ps
 docker-compose logs -f
 ```
 
-✅ **Frontend**: `http://localhost:3000`
-✅ **Backend API**: `http://localhost:8080`
-✅ **API Documentation**: `http://localhost:8080/swagger/index.html`
-✅ **Database**: `localhost:5432`
+#### Docker Services Overview
+The `docker-compose.yml` includes:
+- **PostgreSQL Database**: Port 5433 (external), 5432 (internal)
+- **Backend API**: Port 8080
+- **Frontend**: Port 3000
+- **Nginx**: Disabled by default (optional)
 
-### Option 2: Local Development
+#### Docker Management Commands
+```bash
+# Start services
+docker-compose up -d
+
+# Stop services
+docker-compose down
+
+# Restart services
+docker-compose restart
+
+# View logs
+docker-compose logs [service-name]
+
+# Rebuild and restart
+docker-compose build --no-cache
+docker-compose up -d
+
+# Clean up everything (including volumes)
+docker-compose down -v --remove-orphans
+docker system prune -f
+```
+
+#### Service Endpoints
+- ✅ **Frontend**: `http://localhost:3000`
+- ✅ **Backend API**: `http://localhost:8080`
+- ✅ **API Health**: `http://localhost:8080/health`
+- ✅ **Database**: `localhost:5433` (external access)
+
+### Option 2: Local Development (Without Docker)
+
+#### Prerequisites Setup
+```bash
+# Install PostgreSQL (Ubuntu/Debian)
+sudo apt update
+sudo apt install postgresql postgresql-contrib
+
+# Start PostgreSQL service
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+# Create database and user
+sudo -u postgres psql
+CREATE DATABASE taskmanager;
+CREATE USER taskuser WITH PASSWORD 'taskpass';
+GRANT ALL PRIVILEGES ON DATABASE taskmanager TO taskuser;
+\q
+```
 
 #### Backend Setup
 ```bash
+# Navigate to backend directory
 cd backend
 
-# Install dependencies
+# Install Go dependencies
 go mod download
 
-# Setup database
-sudo -u postgres psql -c "CREATE DATABASE taskmanager;"
+# Create environment file (optional)
+cat > .env << EOF
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=taskuser
+DB_PASSWORD=taskpass
+DB_NAME=taskmanager
+DB_SSLMODE=disable
+SERVER_PORT=8080
+JWT_SECRET=your-secret-key-here
+EOF
 
-# Start backend
+# Run database migrations (automatic on startup)
 go run main.go
 ```
 
+**Backend will be available at**: `http://localhost:8080`
+
 #### Frontend Setup
 ```bash
+# Navigate to frontend directory
 cd frontend
 
-# Install dependencies
+# Install Node.js dependencies
 npm install
 
-# Start frontend
+# Create environment file (optional)
+cat > .env << EOF
+REACT_APP_API_URL=http://localhost:8080/api/v1
+EOF
+
+# Start development server
 npm start
 ```
+
+**Frontend will be available at**: `http://localhost:3000`
+
+#### Access Points
+- ✅ **Frontend**: `http://localhost:3000`
+- ✅ **Backend API**: `http://localhost:8080`
+- ✅ **API Health**: `http://localhost:8080/health`
+- ✅ **Database**: `localhost:5432`
 
 ## 🎯 Features
 
