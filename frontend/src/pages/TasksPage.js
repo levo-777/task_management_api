@@ -36,7 +36,8 @@ const TasksPage = () => {
       
       try {
         const tasksResponse = await api.get(`/users/${user.id}/tasks`);
-        setTasks(tasksResponse.data);
+        // Fix: Extract tasks from the data property
+        setTasks(tasksResponse.data.data || []);
 
       } catch (error) {
         console.error('Error fetching tasks or departments', error);
@@ -63,10 +64,11 @@ const TasksPage = () => {
         user_id: user?.id,  
         due_date: dayjs(newTask.due_date).toISOString(),
       });
-            
-            setTasks(prev => [...prev, response.data]);
-            setNewTask({ title: '', description: '', due_date: null });
-      window.location.reload();
+      
+      // Fix: Extract task from response.data.task
+      const newTaskData = response.data.task;
+      setTasks(prev => [...prev, newTaskData]);
+      setNewTask({ title: '', description: '', due_date: null });
     } catch (error) {
       console.error('Error creating task', error);
     }

@@ -10,12 +10,17 @@ const RegistrationPage = () => {
 
   const onSubmit = async (data) => {
     try {
+      console.log('Registration data:', data); // Debug log
       const response = await api.post('/auth/register', data);
+      console.log('Registration response:', response.data); // Debug log
       if (response.data.message) {
+        alert('Registration successful! Please login.');
         navigate('/'); 
       }
     } catch (error) {
       console.error('Error registering', error);
+      console.error('Error response:', error.response?.data); // Debug log
+      alert(`Registration failed: ${error.response?.data?.error || error.message}`);
     }
   };
 
@@ -63,7 +68,13 @@ const RegistrationPage = () => {
             <TextField
               label="Email"
               type="email"
-              {...register("email", { required: "Email is required" })}
+              {...register("email", { 
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Invalid email address"
+                }
+              })}
               error={!!errors.email}
               helperText={errors.email?.message}
               variant="outlined"
@@ -74,7 +85,13 @@ const RegistrationPage = () => {
             <TextField
               label="Password"
               type="password"
-              {...register("password", { required: "Password is required" })}
+              {...register("password", { 
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters"
+                }
+              })}
               error={!!errors.password}
               helperText={errors.password?.message}
               variant="outlined"

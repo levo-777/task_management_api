@@ -30,11 +30,11 @@ api.interceptors.response.use(
 
       switch (status) {
         case 400:
-          alert("Bad Request: Please check your input.");
+          // Don't show alert for 400 errors - let components handle them
           break;
         case 401:
           localStorage.removeItem("access_token");
-          localStorage.removeItem("userData");
+          localStorage.removeItem("user");
           window.location.href = "/";
           break;
         case 404:
