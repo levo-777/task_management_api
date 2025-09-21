@@ -1,6 +1,6 @@
 # Taskify - Task Management System
 
-A task management API with modern authentication, role-based access control, and advanced features.
+A task management API with modern authentication, role-based access control.
 
 ## 🚀 Quick Overview
 
