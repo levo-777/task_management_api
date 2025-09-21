@@ -1,4 +1,4 @@
-# Taskify - Task Management System
+# Task Management API
 
 A task management API with modern authentication, role-based access control.
 
