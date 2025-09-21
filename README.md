@@ -38,7 +38,6 @@ Taskify is a complete task management solution that provides:
 ### Infrastructure
 - **Containerization**: Docker & Docker Compose
 - **Database**: PostgreSQL with optimized indexes
-- **Cache**: Redis (optional)
 - **Reverse Proxy**: Nginx
 - **Monitoring**: Health checks and logging
 
@@ -180,32 +179,6 @@ npm start
 - ✅ **Backend API**: `http://localhost:8080`
 - ✅ **API Health**: `http://localhost:8080/health`
 - ✅ **Database**: `localhost:5432`
-
-## 🎯 Features
-
-### Core Functionality
-- **Task Management**: Create, read, update, delete tasks
-- **User Authentication**: Registration, login, password hashing
-- **Role-Based Access**: User and Admin roles with different permissions
-- **Task Filtering**: Filter by status, priority, date
-- **Task Sorting**: Sort by creation date, priority, status
-- **Pagination**: Handle large datasets efficiently
-
-### Advanced Features
-- **Real-time Updates**: Live task status updates
-- **Search Functionality**: Find tasks by title or description
-- **Priority Levels**: Low, medium, high priority tasks
-- **Status Tracking**: Pending, in progress, completed
-- **User Profiles**: Manage user account settings
-- **Admin Dashboard**: User management (admin only)
-
-### Performance & Security
-- **High-Performance Caching**: Ristretto cache for frequently accessed data
-- **Database Indexing**: Optimized queries with strategic indexes
-- **Rate Limiting**: Protection against abuse and brute force attacks
-- **SQL Injection Protection**: Parameterized queries
-- **JWT Security**: Secure token management with refresh mechanism
-- **CORS Configuration**: Secure cross-origin requests
 
 ## 📖 API Documentation
 
