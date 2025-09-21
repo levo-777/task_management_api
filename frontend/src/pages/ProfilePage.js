@@ -12,7 +12,7 @@ const ProfilePage = () => {
     const fetchProfile = async () => {
       try {
         const res = await api.get('/users/profile');
-        setProfileData(res.data); 
+        setProfileData(res.data.user); // Fix: Extract user data from response 
       } catch (err) {
         setError("Failed to load profile");
       }
@@ -77,17 +77,17 @@ const ProfilePage = () => {
             {/* Profile Details */}
             <Box sx={{ marginTop: 2 }}>
               <Typography variant="body1" gutterBottom>
-                <strong>ID:</strong> {profileData.id}
+                <strong>ID:</strong> {profileData?.id || 'N/A'}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                <strong>Username:</strong> {profileData.username}
+                <strong>Username:</strong> {profileData?.username || 'N/A'}
               </Typography>
               <Typography variant="body1" gutterBottom>
-                <strong>Email:</strong> {profileData.email}
+                <strong>Email:</strong> {profileData?.email || 'N/A'}
               </Typography>
               <Typography variant="body1" gutterBottom>
                 <strong>Joined At:</strong>{" "}
-                {new Date(profileData.CreatedAt).toLocaleDateString()}
+                {profileData?.created_at ? new Date(profileData.created_at).toLocaleDateString() : 'Invalid Date'}
               </Typography>
             </Box>
 

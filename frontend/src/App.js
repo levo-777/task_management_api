@@ -7,23 +7,12 @@ import AdminPanel from './pages/AdminPanel';
 import LogoutPage from './pages/LogoutPage';
 import WithNavBar from './components/WithNavBar';
 import Unauthorized from './pages/Unauthorized';
-import React, { useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import React from 'react';
+import { useUser } from './context/UserContext';
 
 
 function App() {
-
-  const [user, setUser] = useState(() => {
-    const access_token = localStorage.getItem('access_token');
-        if (access_token) {
-          try {
-            const decoded = jwtDecode(access_token);
-            return decoded;
-          } catch (error) {
-            console.error('Failed to decode access token', error);
-            return null;}
-        }
-  });
+  const { user } = useUser();
   return (
     <Router>
       <Routes>

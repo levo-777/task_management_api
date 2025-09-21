@@ -11,8 +11,10 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/gofrs/uuid"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"gorm.io/gorm"
 )
 
 // @title Taskify API
@@ -60,6 +62,12 @@ func main() {
 	)
 	if err != nil {
 		log.Fatal("Failed to migrate database: ", err)
+	}
+
+	// Initialize database with default data
+	err = initializeDatabase(db)
+	if err != nil {
+		log.Fatal("Failed to initialize database: ", err)
 	}
 
 	// Initialize cache service
@@ -158,4 +166,86 @@ func main() {
 	// Start server
 	log.Println("Starting server on :8080")
 	r.Run(":8080")
+}
+
+func initializeDatabase(db *gorm.DB) error {
+	// Check if roles already exist
+	var roleCount int64
+	db.Model(&models.Role{}).Count(&roleCount)
+
+	if roleCount == 0 {
+		// Create roles
+		roles := []models.Role{
+			{ID: uuid.FromStringOrNil("550e8400-e29b-41d4-a716-446655440001"), Name: "user"},
+			{ID: uuid.FromStringOrNil("550e8400-e29b-41d4-a716-446655440002"), Name: "admin"},
+		}
+
+		for _, role := range roles {
+			if err := db.Create(&role).Error; err != nil {
+				return err
+			}
+		}
+
+		// Create permissions
+		permissions := []models.Permission{
+			{ID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440001"), Resource: "profile", Action: "read"},
+			{ID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440002"), Resource: "profile", Action: "write"},
+			{ID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440003"), Resource: "task", Action: "create"},
+			{ID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440004"), Resource: "task", Action: "read"},
+			{ID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440005"), Resource: "task", Action: "write"},
+		}
+
+		for _, permission := range permissions {
+			if err := db.Create(&permission).Error; err != nil {
+				return err
+			}
+		}
+
+		// Create role-permission mappings
+		rolePermissions := []models.RolePermission{
+			// Admin permissions
+			{RoleID: uuid.FromStringOrNil("550e8400-e29b-41d4-a716-446655440002"), PermissionID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440001")}, // profile:read
+			{RoleID: uuid.FromStringOrNil("550e8400-e29b-41d4-a716-446655440002"), PermissionID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440002")}, // profile:write
+			{RoleID: uuid.FromStringOrNil("550e8400-e29b-41d4-a716-446655440002"), PermissionID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440003")}, // task:create
+			{RoleID: uuid.FromStringOrNil("550e8400-e29b-41d4-a716-446655440002"), PermissionID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440004")}, // task:read
+			{RoleID: uuid.FromStringOrNil("550e8400-e29b-41d4-a716-446655440002"), PermissionID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440005")}, // task:write
+			// User permissions
+			{RoleID: uuid.FromStringOrNil("550e8400-e29b-41d4-a716-446655440001"), PermissionID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440001")}, // profile:read
+			{RoleID: uuid.FromStringOrNil("550e8400-e29b-41d4-a716-446655440001"), PermissionID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440003")}, // task:create
+			{RoleID: uuid.FromStringOrNil("550e8400-e29b-41d4-a716-446655440001"), PermissionID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440004")}, // task:read
+			{RoleID: uuid.FromStringOrNil("550e8400-e29b-41d4-a716-446655440001"), PermissionID: uuid.FromStringOrNil("750e8400-e29b-41d4-a716-446655440005")}, // task:write
+		}
+
+		for _, rp := range rolePermissions {
+			if err := db.Create(&rp).Error; err != nil {
+				return err
+			}
+		}
+
+		// Create admin user
+		adminUser := models.User{
+			ID:       uuid.FromStringOrNil("bd006d41-aded-4040-9934-2ba4e909ef9a"),
+			Username: "admin",
+			Email:    "admin@gmail.com",
+			Password: "$2a$10$ZsE5IA/WUP2CKVd0rND/rum3DKp6lLfjTGSHAmqONb9eGCLY4GYD6", // admin123
+		}
+
+		if err := db.Create(&adminUser).Error; err != nil {
+			return err
+		}
+
+		// Assign admin role to admin user
+		adminUserRole := models.UserRole{
+			UserID: adminUser.ID,
+			RoleID: uuid.FromStringOrNil("550e8400-e29b-41d4-a716-446655440002"), // admin role
+		}
+
+		if err := db.Create(&adminUserRole).Error; err != nil {
+			return err
+		}
+
+		log.Println("Database initialized with default data")
+	}
+
+	return nil
 }

@@ -15,14 +15,21 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const access_token = localStorage.getItem('access_token');
-    if (access_token) {
+    const storedUser = localStorage.getItem('user');
+    
+    if (access_token && storedUser) {
       try {
-        const decoded = jwtDecode(access_token);
-        setUser(decoded);
+        // Use stored user data directly (already combined in LoginPage)
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
       } catch (error) {
-        console.error('Failed to decode access token', error);
+        console.error('Failed to parse user data', error);
         setUser(null);
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user');
       }
+    } else {
+      setUser(null);
     }
   }, []);
 
@@ -33,6 +40,7 @@ export const UserProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
   };
 
   return (

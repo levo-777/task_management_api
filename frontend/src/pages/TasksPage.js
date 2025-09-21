@@ -29,8 +29,13 @@ const TasksPage = () => {
   
   useEffect(() => {
     const fetchData = async () => {
+      if (!user?.id) {
+        console.log('TasksPage - No user ID available, skipping API call');
+        return;
+      }
+      
       try {
-        const tasksResponse = await api.get(`/users/${user?.user_id}/tasks`);
+        const tasksResponse = await api.get(`/users/${user.id}/tasks`);
         setTasks(tasksResponse.data);
 
       } catch (error) {
@@ -55,7 +60,7 @@ const TasksPage = () => {
     try {
       const response = await api.post('/tasks', {
         ...newTask,
-        user_id: user?.user_id,  
+        user_id: user?.id,  
         due_date: dayjs(newTask.due_date).toISOString(),
       });
             
